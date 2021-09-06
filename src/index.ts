@@ -2,7 +2,10 @@ import express from 'express';
 import { generateImage } from './helpers/generate-image';
 
 const app = express();
-app.use(express.static('public'));
+app.use((req: express.Request, res: express.Response, next: Function) => {
+  console.log('ACCESS LOG', req.url);
+  next();
+});
 
 // image for a token
 app.get('/:token.png', (req: express.Request, res: express.Response) => {
@@ -24,6 +27,10 @@ app.get('/:token.png', (req: express.Request, res: express.Response) => {
   res.end(image); 
 });
 
-app.listen(parseInt(process.env.PORT) || 8000, '127.0.0.1', () => {
+app.use((req: express.Request, res: express.Response, next: Function) => {
+  res.status(404).end();
+});
+
+app.listen(parseInt(process.env.PORT ?? '8000'), '127.0.0.1', () => {
   console.log('server started');
 });
