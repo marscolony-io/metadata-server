@@ -24,6 +24,6 @@ app.get('/:token.png', (req: express.Request, res: express.Response) => {
   res.end(image); 
 });
 
-app.listen(8000, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log('server started');
 });
