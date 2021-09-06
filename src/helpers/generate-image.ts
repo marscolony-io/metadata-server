@@ -12,7 +12,7 @@ export const generateImage = (token: number): string => {
     color: '#dd4',
     bgcolor: '#745',
     size: 10,
-    scale: 10,
+    scale: 100,
     spotcolor: '#d23',
   }, canvas);
   return icon.toDataURL().split(',')[1]; // ltrim "data:image/png;base64,"
