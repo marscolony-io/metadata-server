@@ -48,5 +48,5 @@ app.use((req: express.Request, res: express.Response, next: Function) => {
 });
 
 app.listen(parseInt(process.env.PORT ?? '8000'), '127.0.0.1', () => {
-  console.log('server started');
+  console.log('server started', process.env.PORT ?? '8000');
 });
