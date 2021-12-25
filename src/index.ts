@@ -1,8 +1,10 @@
 import express from 'express';
 import { generateImage } from './helpers/generate-image';
 import { generateMetadata } from './helpers/generate-metadata';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use((req: express.Request, res: express.Response, next: Function) => {
   console.log('ACCESS LOG', req.url);
   next();
