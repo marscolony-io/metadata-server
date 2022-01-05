@@ -63,7 +63,7 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       storage.robotAssembly.set(token, parseInt(robotAssembly));
       storage.powerProduction.set(token, parseInt(powerProduction));
       storage.lastUpdated.set(token, new Date());
-    } catch () {
+    } catch {
       return getData(token, true); // return old data in case of any error
     }
   }
