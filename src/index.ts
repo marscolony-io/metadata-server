@@ -42,7 +42,9 @@ app.get('/:token', (req: express.Request, res: express.Response) => {
     res.status(404).end();
     return;
   }
-  res.json(generateMetadata(tokenNumber));
+  generateMetadata(tokenNumber).then((meta) => {
+    res.json(meta);
+  });
 });
 
 app.use((req: express.Request, res: express.Response, next: Function) => {

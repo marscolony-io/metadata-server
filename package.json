@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/"
+    "start": "node build/",
+    "build": "tsc src/index.ts --outDir build --resolveJsonModule --esModuleInterop"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "express": "^4.17.1",
     "git": "^0.1.5",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.2",
+    "web3": "^1.6.1"
   }
 }

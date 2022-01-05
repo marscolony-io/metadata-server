@@ -1,3 +1,6 @@
+import { attribute, getData } from "../services/TokenChecker";
+import { Attribute } from '../types';
+
 const toRad = (phi: number): number => phi * Math.PI / 180;
 const toDeg = (phi: number): number => phi / Math.PI * 180;
 
@@ -41,14 +44,28 @@ const generateDescription = (token: number): string => {
   const longitudes: [number, number] = [toLong(x), toLong(x + 1)];
   latitudes.sort((a: number, b: number) => a - b);
   longitudes.sort((a: number, b: number) => a - b);
-  return `Land plot: longitudes ${longitudes[0].toFixed(8)} - ${longitudes[1].toFixed(8)}, ` +
-    `latitudes ${latitudes[0].toFixed(8)} - ${latitudes[1].toFixed(8)}`;
-}
+  return `Land plot #${token}`;
+};
 
-export const generateMetadata = (token: number): Record<string, string | Record<string, any>> => {
+const generateAttributes = async (token: number): Promise<Attribute[]> => {
+  const { x, y } = parseTokenNumber(token);
+  const latitudes: [number, number] = [toLat(y), toLat(y + 1)];
+  const longitudes: [number, number] = [toLong(x), toLong(x + 1)];
+  latitudes.sort((a: number, b: number) => a - b);
+  longitudes.sort((a: number, b: number) => a - b);
+  const data = await getData(token);
+  return [
+    attribute('Longitudes', `${longitudes[0].toFixed(8)} - ${longitudes[1].toFixed(8)}`),
+    attribute('Latitudes', `${latitudes[0].toFixed(8)} - ${latitudes[1].toFixed(8)}`),
+    ...data,
+  ];
+};
+
+export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>>> => {
   return {
     name: `MarsColony Land Plot #${token}`,
     description: generateDescription(token),
     image: `https://meta.marscolony.io/${token}.png`,
+    attributes: await generateAttributes(token),
   };
 };
