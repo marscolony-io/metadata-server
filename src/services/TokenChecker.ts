@@ -48,21 +48,16 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       const [
         earned,
         speed,
-        hasBaseStation,
-        transport,
-        robotAssembly,
-        powerProduction,
+        enhancements,
       ] = await Promise.all([
         gm.methods.getEarned(token.toString()).call(),
         gm.methods.getEarningSpeed(token.toString()).call(),
-        gm.methods.hasBaseStation(token.toString()).call(),
-        gm.methods.getTransport(token.toString()).call(),
-        gm.methods.getRobotAssembly(token.toString()).call(),
-        gm.methods.getPowerProduction(token.toString()).call(),
+        gm.methods.getEnhancements(token.toString()).call(),
       ]);
+      const [hasBaseStation, transport, robotAssembly, powerProduction] = enhancements;
       storage.earned.set(token, parseInt(earned)  * 1e-18);
       storage.speed.set(token, parseInt(speed));
-      storage.hasBaseStation.set(token, Boolean(hasBaseStation));
+      storage.hasBaseStation.set(token, Boolean(parseInt(hasBaseStation)));
       storage.transport.set(token, parseInt(transport));
       storage.robotAssembly.set(token, parseInt(robotAssembly));
       storage.powerProduction.set(token, parseInt(powerProduction));
