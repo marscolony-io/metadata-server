@@ -47,13 +47,16 @@ const generateDescription = (token: number): string => {
   return `Land plot #${token}`;
 };
 
-const generateAttributes = async (token: number): Promise<Attribute[]> => {
+const generateAttributes = async (token: number): Promise<Attribute[] | null> => {
   const { x, y } = parseTokenNumber(token);
   const latitudes: [number, number] = [toLat(y), toLat(y + 1)];
   const longitudes: [number, number] = [toLong(x), toLong(x + 1)];
   latitudes.sort((a: number, b: number) => a - b);
   longitudes.sort((a: number, b: number) => a - b);
   const data = await getData(token);
+  if (data === null) {
+    return null;
+  }
   return [
     attribute('Longitudes', `${longitudes[0].toFixed(8)} - ${longitudes[1].toFixed(8)}`),
     attribute('Latitudes', `${latitudes[0].toFixed(8)} - ${latitudes[1].toFixed(8)}`),
@@ -61,11 +64,15 @@ const generateAttributes = async (token: number): Promise<Attribute[]> => {
   ];
 };
 
-export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>>> => {
+export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>> | null> => {
+  const attributes = await generateAttributes(token);
+  if (attributes === null) {
+    return null;
+  }
   return {
     name: `MarsColony Land Plot #${token}`,
     description: generateDescription(token),
     image: `https://meta.marscolony.io/${token}.png`,
-    attributes: await generateAttributes(token),
+    attributes,
   };
 };

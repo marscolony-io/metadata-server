@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { TESTNET_CLNY, TESTNET_GM, TESTNET_NFT } from '../blockchain/contracts';
 // import CLNY from '../blockchain/CLNY.json';
-// import MC from '../blockchain/MC.json';
+import MC from '../blockchain/MC.json';
 import GM from '../blockchain/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute, IStorage } from '../types';
@@ -13,7 +13,7 @@ const web3 = new Web3(
 );
 
 // const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
-// const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
+const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
 const gm = new web3.eth.Contract(GM.abi as AbiItem[], TESTNET_GM);
 
 const storage: IStorage = {
@@ -35,7 +35,7 @@ export const attribute = (trait_type: string, value: string): Attribute => {
   };
 };
 
-export const getData = async (token: number, nextTry = false): Promise<Attribute[]> => {
+export const getData = async (token: number, nextTry = false): Promise<Attribute[] | null> => {
   const lastUpdated = storage.lastUpdated.get(token);
   if (
     !nextTry &&
@@ -45,6 +45,7 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
     )
   ) {
     try {
+      await mc.methods.ownerOf(token.toString()).call(); // can revert
       const [
         earned,
         speed,
@@ -62,9 +63,12 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       storage.robotAssembly.set(token, parseInt(robotAssembly));
       storage.powerProduction.set(token, parseInt(powerProduction));
       storage.lastUpdated.set(token, new Date());
-    } catch {
+    } catch () {
       return getData(token, true); // return old data in case of any error
     }
+  }
+  if (!storage.lastUpdated.has(token)) {
+    return null;
   }
   return [
     attribute(

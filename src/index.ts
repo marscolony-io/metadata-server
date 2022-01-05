@@ -43,7 +43,11 @@ app.get('/:token', (req: express.Request, res: express.Response) => {
     return;
   }
   generateMetadata(tokenNumber).then((meta) => {
-    res.json(meta);
+    if (meta === null) {
+      res.sendStatus(404);
+    } else {
+      res.json(meta);
+    }
   });
 });
 
