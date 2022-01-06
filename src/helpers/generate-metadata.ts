@@ -70,7 +70,7 @@ export const generateMetadata = async (token: number): Promise<Record<string, st
     return null;
   }
   return {
-    name: `MarsColony Land Plot #${token}`,
+    name: `Land Plot #${token}`,
     description: generateDescription(token),
     image: `https://meta.marscolony.io/${token}.png`,
     attributes,
