@@ -2,12 +2,19 @@ import express from 'express';
 import { generateImage } from './helpers/generate-image';
 import { generateMetadata } from './helpers/generate-metadata';
 import cors from 'cors';
+import { getSupply } from './services/TokenService';
 
 const app = express();
 app.use(cors());
 app.use((req: express.Request, res: express.Response, next: Function) => {
   console.log('ACCESS LOG', req.url);
   next();
+});
+
+app.get('/clny-supply', (req: express.Request, res: express.Response) => {
+  getSupply().then((supply) => {
+    res.send(supply);
+  })
 });
 
 // image for a token

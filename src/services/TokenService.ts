@@ -1,10 +1,11 @@
 import Web3 from 'web3';
 import { TESTNET_CLNY, TESTNET_GM, TESTNET_NFT } from '../blockchain/contracts';
-// import CLNY from '../blockchain/CLNY.json';
+import CLNY from '../blockchain/CLNY.json';
 import MC from '../blockchain/MC.json';
 import GM from '../blockchain/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute, IStorage } from '../types';
+import { readBuilderProgram } from 'typescript';
 
 const web3 = new Web3(
   process.env.TESTNET
@@ -12,7 +13,7 @@ const web3 = new Web3(
     : 'https://api.harmony.one',
 );
 
-// const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
+const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
 const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
 const gm = new web3.eth.Contract(GM.abi as AbiItem[], TESTNET_GM);
 
@@ -100,4 +101,15 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       (storage.powerProduction.get(token) ?? -1).toFixed(0),
     ),
   ];
+};
+
+let cachedSupply = 'Error';
+export const getSupply = async (): Promise<string> => {
+  try {
+    const supply = await clny.methods.totalSupply().call();
+    cachedSupply = (supply * 10 ** -18).toFixed(3);
+  } catch {
+    
+  }
+  return cachedSupply;
 };

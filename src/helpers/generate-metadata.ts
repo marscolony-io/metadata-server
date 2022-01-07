@@ -1,4 +1,4 @@
-import { attribute, getData } from "../services/TokenChecker";
+import { attribute, getData } from "../services/TokenService";
 import { Attribute } from '../types';
 
 const toRad = (phi: number): number => phi * Math.PI / 180;
