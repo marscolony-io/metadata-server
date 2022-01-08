@@ -113,3 +113,21 @@ export const getSupply = async (): Promise<string> => {
   }
   return cachedSupply;
 };
+
+export const tokens = new Set<number>();
+(async () => {
+  while (true) {
+    for (let token = 1; token <= 21000; token++) {
+      if (tokens.has(token)) {
+        continue;
+      }
+      try {
+        await mc.methods.ownerOf(token.toString()).call();
+        tokens.add(token);
+      } catch {
+
+      }
+      await new Promise(rs => setTimeout(rs, 100));
+    }
+  }
+})();
