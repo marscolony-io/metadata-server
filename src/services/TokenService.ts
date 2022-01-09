@@ -5,7 +5,6 @@ import MC from '../blockchain/MC.json';
 import GM from '../blockchain/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute, IStorage } from '../types';
-import { readBuilderProgram } from 'typescript';
 
 const web3 = new Web3(
   process.env.TESTNET
@@ -115,28 +114,33 @@ export const getSupply = async (): Promise<string> => {
 };
 
 export const tokens = new Set<number>();
-(async () => {
-  //preload
-  for (let i = 0; i < 90; i++) {
-    try {
-      const data = await mc.methods.allTokensPaginate(i * 200, i * 200 + 200).call();
-      data.forEach(item => tokens.add(+item));
-    } catch {}
-  }
+// every token is minted
+for (let i = 1; i <= 21000; i++) {
+  tokens.add(i);
+}
+// TODO rewrite for launches on another chains
+// (async () => {
+//   //preload
+//   for (let i = 0; i < 90; i++) {
+//     try {
+//       const data = await mc.methods.allTokensPaginate(i * 200, i * 200 + 200).call();
+//       data.forEach(item => tokens.add(+item));
+//     } catch {}
+//   }
   
-  while (true) {
-    for (let token = 1; token <= 21000; token++) {
-      if (tokens.has(token)) {
-        continue;
-      }
-      try {
-        await mc.methods.ownerOf(token.toString()).call();
-        tokens.add(token);
-      } catch {
+//   while (true) {
+//     for (let token = 1; token <= 21000; token++) {
+//       if (tokens.has(token)) {
+//         continue;
+//       }
+//       try {
+//         await mc.methods.ownerOf(token.toString()).call();
+//         tokens.add(token);
+//       } catch {
 
-      }
-      await new Promise(rs => setTimeout(rs, 100));
-    }
-    await new Promise(rs => setTimeout(rs, 500));
-  }
-})();
+//       }
+//       await new Promise(rs => setTimeout(rs, 100));
+//     }
+//     await new Promise(rs => setTimeout(rs, 500));
+//   }
+// })();
