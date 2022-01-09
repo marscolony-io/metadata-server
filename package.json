@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node build/tests/getData.test.js",
     "start": "node build/",
-    "build": "tsc src/index.ts --outDir build --resolveJsonModule --esModuleInterop"
+    "build": "tsc src/index.ts --outDir build --resolveJsonModule --esModuleInterop",
+    "build-test": "tsc src/tests/getData.test.ts --outDir build --resolveJsonModule --esModuleInterop && npm run test"
   },
   "repository": {
     "type": "git",

@@ -35,13 +35,15 @@ export const attribute = (trait_type: string, value: string): Attribute => {
   };
 };
 
-export const getData = async (token: number, nextTry = false): Promise<Attribute[] | null> => {
+
+const TRIES = 3;
+export const getData = async (token: number, nextTry = TRIES): Promise<Attribute[] | null> => {
   const lastUpdated = storage.lastUpdated.get(token);
   if (
-    !nextTry &&
+    nextTry > 0 &&
     (
       !lastUpdated
-      || +new Date() / 1000 - +lastUpdated / 1000 > MINUTE
+      || +new Date() / 1000 - +lastUpdated / 1000 > 60 * MINUTE
     )
   ) {
     try {
@@ -64,13 +66,14 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       storage.powerProduction.set(token, parseInt(powerProduction));
       storage.lastUpdated.set(token, new Date());
     } catch {
-      return getData(token, true); // return old data in case of any error
+      return getData(token, nextTry--); // return old data in case of any error
     }
   }
+  // after error recursion
   if (!storage.lastUpdated.has(token)) {
     return null;
   }
-  return [
+  const data: Attribute[] = [
     attribute(
       'Data updated',
       (storage.lastUpdated.get(token) ?? new Date(0)).toUTCString(),
@@ -100,6 +103,7 @@ export const getData = async (token: number, nextTry = false): Promise<Attribute
       (storage.powerProduction.get(token) ?? -1).toFixed(0),
     ),
   ];
+  return data;
 };
 
 let cachedSupply = 'Error';
