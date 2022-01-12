@@ -4,9 +4,12 @@ import { renderIcon } from '@download/blockies';
 
 const canvas = createCanvas(50, 50);
 
+const cache: string[] = new Array(21000);
+
 export const generateImage = (token: number): string => {
-  // TODO benchmark - can cache, but do we need caching?
-  console.log(`GENERATING IMAGE ${token}`);
+  if (cache[token - 1]) {
+    return cache[token - 1];
+  }
   const icon = renderIcon({
     seed: token.toString(),
     color: '#dd4',
@@ -15,5 +18,7 @@ export const generateImage = (token: number): string => {
     scale: 100,
     spotcolor: '#d23',
   }, canvas);
-  return icon.toDataURL().split(',')[1]; // ltrim "data:image/png;base64,"
+  const str = icon.toDataURL().split(',')[1]; // ltrim "data:image/png;base64,"
+  cache[token - 1] = str;
+  return str;
 };
