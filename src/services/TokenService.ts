@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import { TESTNET_CLNY, TESTNET_GM, TESTNET_NFT } from '../blockchain/contracts';
-import CLNY from '../blockchain/CLNY.json';
-import MC from '../blockchain/MC.json';
-import GM from '../blockchain/GameManager.json';
+import CLNY from '../abi/CLNY.json';
+import MC from '../abi/MC.json';
+import GM from '../abi/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute, IStorage } from '../types';
 
@@ -15,6 +15,65 @@ const web3 = new Web3(
 const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
 const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
 const gm = new web3.eth.Contract(GM.abi as AbiItem[], TESTNET_GM);
+
+type TokenData = {
+  earned: number;
+  speed: number;
+  baseStation: boolean;
+  transport: number;
+  robotAssembly: number;
+  powerProduction: number;
+  lastUpdated: Date;
+}
+
+const tokenData: TokenData[] = new Array(21001); // from 1 to 21000 as tokens go (ignore 0)
+
+let i = 1;
+const started = +new Date();
+const updaterCycle = async () => {
+  i++;
+  if (i > 21000) {
+    i = 1;
+  }
+  try {
+    const [
+      attributes,
+    ] = await Promise.all([
+      gm.methods.getAttributes(i.toString()).call(),
+    ]);
+    const baseStation = Boolean(attributes['0'] * 1);
+    const transport = attributes['1'] * 1;
+    const robotAssembly = attributes['2'] * 1;
+    const powerProduction = attributes['3'] * 1;
+    const earned = attributes['4'] * 1e-18;
+    const speed = attributes['5'] * 1;
+
+    tokenData[i] = {
+      earned,
+      speed,
+      baseStation,
+      transport,
+      robotAssembly,
+      powerProduction,
+      lastUpdated: new Date(),
+    };
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  await new Promise((rs) => setTimeout(rs, 250));
+  console.log((+new Date() - started) / i);
+};
+
+const startCycle = async () => {
+  while (true) {
+    await updaterCycle();
+  }
+};
+
+startCycle();
+startCycle();
+startCycle();
 
 const storage: IStorage = {
   earned: new Map(),
