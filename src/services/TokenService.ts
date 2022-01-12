@@ -71,9 +71,9 @@ const startCycle = async () => {
   }
 };
 
-startCycle();
-startCycle();
-startCycle();
+// startCycle();
+// startCycle();
+// startCycle();
 
 const storage: IStorage = {
   earned: new Map(),
