@@ -2,7 +2,7 @@ import express from 'express';
 import { generateImage } from './helpers/generate-image';
 import { generateMetadata } from './helpers/generate-metadata';
 import cors from 'cors';
-import { getSupply, tokens } from './services/TokenService';
+import { allTokens, getSupply } from './services/TokenService';
 
 const app = express();
 app.use(cors());
@@ -18,7 +18,7 @@ app.get('/clny-supply', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/tokens', (req: express.Request, res: express.Response) => {
-  res.json(Array.from(tokens.values()));
+  res.json(allTokens);
 });
 
 // image for a token
@@ -53,13 +53,12 @@ app.get('/:token', (req: express.Request, res: express.Response) => {
     res.status(404).end();
     return;
   }
-  generateMetadata(tokenNumber).then((meta) => {
-    if (meta === null) {
-      res.sendStatus(404);
-    } else {
-      res.json(meta);
-    }
-  });
+  const meta = generateMetadata(tokenNumber);
+  if (meta === null) {
+    res.sendStatus(404);
+  } else {
+    res.json(meta);
+  }
 });
 
 app.use((req: express.Request, res: express.Response, next: Function) => {

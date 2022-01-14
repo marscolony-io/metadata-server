@@ -47,13 +47,13 @@ const generateDescription = (token: number): string => {
   return `Land plot #${token}`;
 };
 
-const generateAttributes = async (token: number): Promise<Attribute[] | null> => {
+const generateAttributes = (token: number): Attribute[] | null => {
   const { x, y } = parseTokenNumber(token);
   const latitudes: [number, number] = [toLat(y), toLat(y + 1)];
   const longitudes: [number, number] = [toLong(x), toLong(x + 1)];
   latitudes.sort((a: number, b: number) => a - b);
   longitudes.sort((a: number, b: number) => a - b);
-  const data = await getData(token);
+  const data = getData(token);
   if (data === null) {
     return null;
   }
@@ -64,8 +64,8 @@ const generateAttributes = async (token: number): Promise<Attribute[] | null> =>
   ];
 };
 
-export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>> | null> => {
-  const attributes = await generateAttributes(token);
+export const generateMetadata = (token: number): Record<string, string | Record<string, any>> | null => {
+  const attributes = generateAttributes(token);
   if (attributes === null) {
     return null;
   }

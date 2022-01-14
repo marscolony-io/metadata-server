@@ -6,6 +6,18 @@ import GM from '../abi/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute, IStorage } from '../types';
 
+const nodes = process.env.TESTNET
+  ? [
+    'https://api.s0.b.hmny.io',
+  ]
+  : [
+    'https://harmony-0-rpc.gateway.pokt.network',
+    'https://api.harmony.one',
+    'https://api.fuzz.fi/',
+  ];
+
+const connections = nodes.map((node: string) => new Web3(node));
+
 const web3 = new Web3(
   process.env.TESTNET
     ? 'https://api.s0.b.hmny.io'
@@ -26,66 +38,63 @@ type TokenData = {
   lastUpdated: Date;
 }
 
-const tokenData: TokenData[] = new Array(21001); // from 1 to 21000 as tokens go (ignore 0)
-
-let i = 1;
-const started = +new Date();
-const updaterCycle = async () => {
-  i++;
-  if (i > 21000) {
-    i = 1;
-  }
-  try {
-    const [
-      attributes,
-    ] = await Promise.all([
-      gm.methods.getAttributes(i.toString()).call(),
-    ]);
-    const baseStation = Boolean(attributes['0'] * 1);
-    const transport = attributes['1'] * 1;
-    const robotAssembly = attributes['2'] * 1;
-    const powerProduction = attributes['3'] * 1;
-    const earned = attributes['4'] * 1e-18;
-    const speed = attributes['5'] * 1;
-
-    tokenData[i] = {
-      earned,
-      speed,
-      baseStation,
-      transport,
-      robotAssembly,
-      powerProduction,
-      lastUpdated: new Date(),
-    };
-  } catch (error) {
-    console.log(error.message);
-  }
-
-  await new Promise((rs) => setTimeout(rs, 250));
-  console.log((+new Date() - started) / i);
-};
-
-const startCycle = async () => {
+/**
+ * This fills allTokens
+ */
+export const allTokens: Array<number> = [];
+(async () => {
+  let start = 0;
   while (true) {
-    await updaterCycle();
+    try {
+      const data = await mc.methods.allTokensPaginate(start, start + 999).call();
+      allTokens.push(...data.map((id) => parseInt(id)));
+      start += data.length;
+      if (start >= 21000) {
+        break;
+      }
+    } catch { }
+    await new Promise((rs) => setTimeout(rs, 10000));
   }
-};
+})();
 
-// startCycle();
-// startCycle();
-// startCycle();
 
-const storage: IStorage = {
-  earned: new Map(),
-  speed: new Map(),
-  hasBaseStation: new Map(),
-  transport: new Map(),
-  robotAssembly: new Map(),
-  powerProduction: new Map(),
-  lastUpdated: new Map(),
-};
-
-const MINUTE = 60;
+const tokenData: Map<number, TokenData> = new Map();
+(async () => {
+  const BUNCH_SIZE = 2;
+  while (true) {
+    await new Promise(rs => setTimeout(rs, 2000));
+    if (allTokens.length === 0) {
+      continue;
+    }
+    for (let i = 0; i < allTokens.length; i = i + BUNCH_SIZE) {
+      const bunch: Array<number> = [];
+      let k = i;
+      while (k < Math.min(i + BUNCH_SIZE, allTokens.length)) {
+        bunch.push(allTokens[k]);
+        k++;
+      }
+      try {
+        const data = await gm.methods.getAttributesMany(bunch).call();
+        k = i;
+        for (const item of data) {
+          const tokenNumber = allTokens[k];
+          tokenData.set(tokenNumber, {
+            earned: item.earned * 1e-18,
+            speed: parseInt(item.speed),
+            baseStation: parseInt(item.baseStation) ? true : false,
+            transport: parseInt(item.transport),
+            robotAssembly: parseInt(item.robotAssembly),
+            powerProduction: parseInt(item.powerProduction),
+            lastUpdated: new Date(),
+          });
+          k++;
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  }
+})();
 
 export const attribute = (trait_type: string, value: string): Attribute => {
   return {
@@ -94,72 +103,41 @@ export const attribute = (trait_type: string, value: string): Attribute => {
   };
 };
 
-
-const TRIES = 3;
-export const getData = async (token: number, nextTry = TRIES): Promise<Attribute[] | null> => {
-  const lastUpdated = storage.lastUpdated.get(token);
-  if (
-    nextTry > 0 &&
-    (
-      !lastUpdated
-      || +new Date() / 1000 - +lastUpdated / 1000 > 60 * MINUTE
-    )
-  ) {
-    try {
-      await mc.methods.ownerOf(token.toString()).call(); // can revert
-      const [
-        earned,
-        speed,
-        enhancements,
-      ] = await Promise.all([
-        gm.methods.getEarned(token.toString()).call(),
-        gm.methods.getEarningSpeed(token.toString()).call(),
-        gm.methods.getEnhancements(token.toString()).call(),
-      ]);
-      const [hasBaseStation, transport, robotAssembly, powerProduction] = enhancements;
-      storage.earned.set(token, parseInt(earned)  * 1e-18);
-      storage.speed.set(token, parseInt(speed));
-      storage.hasBaseStation.set(token, Boolean(parseInt(hasBaseStation)));
-      storage.transport.set(token, parseInt(transport));
-      storage.robotAssembly.set(token, parseInt(robotAssembly));
-      storage.powerProduction.set(token, parseInt(powerProduction));
-      storage.lastUpdated.set(token, new Date());
-    } catch {
-      return getData(token, nextTry--); // return old data in case of any error
-    }
-  }
-  // after error recursion
-  if (!storage.lastUpdated.has(token)) {
+export const getData = (token: number): Attribute[] => {
+  if (!allTokens.includes(token) || !tokenData.has(token)) {
     return null;
   }
+
+  const tokenAttrs = tokenData.get(token);
+
   const data: Attribute[] = [
     attribute(
       'Data updated',
-      (storage.lastUpdated.get(token) ?? new Date(0)).toUTCString(),
+      tokenAttrs.lastUpdated.toUTCString(),
     ),
     attribute(
       'Earned CLNY',
-      (storage.earned.get(token) ?? -1).toFixed(3),
+      tokenAttrs.earned.toFixed(3),
     ),
     attribute(
       'Earning speed, CLNY/day',
-      (storage.speed.get(token) ?? -1).toFixed(1),
+      tokenAttrs.speed.toFixed(1),
     ),
     attribute(
       'Base Station',
-      storage.hasBaseStation.get(token) ? 'yes' : 'no',
+      tokenAttrs.baseStation ? 'yes' : 'no',
     ),
     attribute(
       'Transport LVL',
-      (storage.transport.get(token) ?? -1).toFixed(0),
+      tokenAttrs.transport.toFixed(0),
     ),
     attribute(
       'Robot Assembly LVL',
-      (storage.robotAssembly.get(token) ?? -1).toFixed(0),
+      tokenAttrs.robotAssembly.toFixed(0),
     ),
     attribute(
       'Power Production LVL',
-      (storage.powerProduction.get(token) ?? -1).toFixed(0),
+      tokenAttrs.powerProduction.toFixed(0),
     ),
   ];
   return data;
@@ -175,35 +153,3 @@ export const getSupply = async (): Promise<string> => {
   }
   return cachedSupply;
 };
-
-export const tokens = new Set<number>();
-// every token is minted
-for (let i = 1; i <= 21000; i++) {
-  tokens.add(i);
-}
-// TODO rewrite for launches on another chains
-// (async () => {
-//   //preload
-//   for (let i = 0; i < 90; i++) {
-//     try {
-//       const data = await mc.methods.allTokensPaginate(i * 200, i * 200 + 200).call();
-//       data.forEach(item => tokens.add(+item));
-//     } catch {}
-//   }
-  
-//   while (true) {
-//     for (let token = 1; token <= 21000; token++) {
-//       if (tokens.has(token)) {
-//         continue;
-//       }
-//       try {
-//         await mc.methods.ownerOf(token.toString()).call();
-//         tokens.add(token);
-//       } catch {
-
-//       }
-//       await new Promise(rs => setTimeout(rs, 100));
-//     }
-//     await new Promise(rs => setTimeout(rs, 500));
-//   }
-// })();
