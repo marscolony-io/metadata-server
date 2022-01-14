@@ -60,7 +60,7 @@ export const allTokens: Array<number> = [];
 
 const tokenData: Map<number, TokenData> = new Map();
 (async () => {
-  const BUNCH_SIZE = 2;
+  const BUNCH_SIZE = 100;
   while (true) {
     await new Promise(rs => setTimeout(rs, 2000));
     if (allTokens.length === 0) {
