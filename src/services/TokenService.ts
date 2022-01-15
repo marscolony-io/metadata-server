@@ -8,15 +8,15 @@ import { Attribute } from '../types';
 
 /// TODO move data to redis, escpecially tokens
 
-// const nodes = process.env.TESTNET
-//   ? [
-//     'https://api.s0.b.hmny.io',
-//   ]
-//   : [
-//     'https://harmony-0-rpc.gateway.pokt.network',
-//     'https://api.harmony.one',
-//     'https://api.fuzz.fi',
-//   ];
+const nodes = process.env.TESTNET
+  ? [
+    'https://api.s0.b.hmny.io',
+  ]
+  : [
+    'https://harmony-0-rpc.gateway.pokt.network',
+    'https://api.harmony.one',
+    'https://api.fuzz.fi',
+  ];
 
 const web3 = new Web3(
   process.env.TESTNET
@@ -27,6 +27,8 @@ const web3 = new Web3(
 const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
 const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
 const gm = new web3.eth.Contract(GM.abi as AbiItem[], TESTNET_GM);
+const gms = nodes.map((node) => new new Web3(node).eth.Contract(GM.abi as AbiItem[], TESTNET_GM));
+const anyGm = () => gms[Math.floor(Math.random() * gms.length)];
 
 type TokenData = {
   earned: number;
@@ -78,7 +80,7 @@ const tokenData: Map<number, TokenData> = new Map();
         k++;
       }
       try {
-        const data = await gm.methods.getAttributesMany(bunch).call();
+        const data = await anyGm().methods.getAttributesMany(bunch).call();
         k = i;
         for (const item of data) {
           const tokenNumber = allTokens[k];

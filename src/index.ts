@@ -7,7 +7,9 @@ import { allTokens, getSupply } from './services/TokenService';
 const app = express();
 app.use(cors());
 app.use((req: express.Request, res: express.Response, next: Function) => {
-  console.log('ACCESS LOG', req.url);
+  if (!req.url.endsWith('.png')) {
+    console.log('ACCESS LOG', req.url);
+  }
   next();
 });
 
