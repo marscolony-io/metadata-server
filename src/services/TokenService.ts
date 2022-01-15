@@ -72,7 +72,7 @@ const tokenData: Map<number, TokenData> = new Map();
     }
     let i = 0;
     while (i < allTokens.length) {
-      await new Promise(rs => setTimeout(rs, 5000));
+      await new Promise(rs => setTimeout(rs, 2000));
       const bunch: Array<number> = [];
       let k = i;
       while (k < Math.min(i + BUNCH_SIZE, allTokens.length)) {
