@@ -53,12 +53,13 @@ app.get('/:token', (req: express.Request, res: express.Response) => {
     res.status(404).end();
     return;
   }
-  const meta = generateMetadata(tokenNumber);
-  if (meta === null) {
-    res.sendStatus(404);
-  } else {
-    res.json(meta);
-  }
+  generateMetadata(tokenNumber).then((meta) => {
+    if (meta === null) {
+      res.sendStatus(404);
+    } else {
+      res.json(meta);
+    }
+  });
 });
 
 app.use((req: express.Request, res: express.Response, next: Function) => {
