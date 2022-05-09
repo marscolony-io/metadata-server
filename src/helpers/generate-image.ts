@@ -12,11 +12,11 @@ export const generateImage = (token: number): string => {
   }
   const icon = renderIcon({
     seed: token.toString(),
-    color: '#dd4',
-    bgcolor: '#745',
+    color: '#dddd44',
+    bgcolor: '#774455',
     size: 10,
     scale: 100,
-    spotcolor: '#d23',
+    spotcolor: '#dd2233',
   }, canvas);
   const str = icon.toDataURL().split(',')[1]; // ltrim "data:image/png;base64,"
   cache[token - 1] = str;
