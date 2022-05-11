@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { TESTNET_CLNY, TESTNET_GM, TESTNET_NFT } from '../blockchain/contracts';
+import { CONTRACTS } from '../blockchain/contracts';
 import CLNY from '../abi/CLNY.json';
 import MC from '../abi/MC.json';
 import GM from '../abi/GameManager.json';
@@ -8,26 +8,34 @@ import { Attribute } from '../types';
 
 /// TODO move data to redis, escpecially tokens
 
-const nodes = process.env.TESTNET
-  ? [
+const nodeMap = {
+  hartest: [
     'https://api.s0.b.hmny.io',
-  ]
-  : [
+  ],
+  harmain: [
     'https://harmony-0-rpc.gateway.pokt.network',
     'https://api.harmony.one',
     'https://api.fuzz.fi',
-  ];
+  ],
+  mumbai: [
+    'https://rpc-mumbai.maticvigil.com'
+  ],
+  polygon: [
+    'https://polygon-rpc.com',
+    'https://rpc-mainnet.matic.network',
+    'https://matic-mainnet-archive-rpc.bwarelabs.com',
+    'https://rpc.ankr.com/polygon',
+  ]
+}
 
-const web3 = new Web3(
-  process.env.TESTNET
-    ? 'https://api.s0.b.hmny.io'
-    : 'https://api.harmony.one',
-);
+const nodes = nodeMap[process.env.NETWORK];
 
-const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], TESTNET_CLNY);
-const mc = new web3.eth.Contract(MC.abi as AbiItem[], TESTNET_NFT);
-const gm = new web3.eth.Contract(GM.abi as AbiItem[], TESTNET_GM);
-const gms = nodes.map((node) => new new Web3(node).eth.Contract(GM.abi as AbiItem[], TESTNET_GM));
+const web3 = new Web3(nodeMap[process.env.NETWORK][0]);
+
+const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], CONTRACTS.CLNY);
+const mc = new web3.eth.Contract(MC.abi as AbiItem[], CONTRACTS.MC);
+const gm = new web3.eth.Contract(GM.abi as AbiItem[], CONTRACTS.GM);
+const gms = nodes.map((node) => new new Web3(node).eth.Contract(GM.abi as AbiItem[], CONTRACTS.GM));
 const anyGm = () => gms[Math.floor(Math.random() * gms.length)];
 
 type TokenData = {
@@ -128,6 +136,7 @@ export const getData = async (token: number): Promise<Attribute[] | null> => {
       });
     } catch (error) {
       console.log(error.message);
+      return null;
     }
   }
 
