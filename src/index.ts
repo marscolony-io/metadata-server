@@ -23,6 +23,15 @@ app.get('/tokens', (req: express.Request, res: express.Response) => {
   res.json(allTokens);
 });
 
+app.get('/metrics', (req: express.Request, res: express.Response) => {
+  getSupply().then((supply) => {
+    res.send({
+      claimed: 100,
+      available: 6900,
+    });
+  })
+});
+
 // image for a token
 app.get('/:token.png', (req: express.Request, res: express.Response) => {
   const { token } = req.params;
