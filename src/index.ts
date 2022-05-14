@@ -2,12 +2,12 @@ import express from 'express';
 import { generateImage } from './helpers/generate-image';
 import { generateMetadata } from './helpers/generate-metadata';
 import cors from 'cors';
-import { allTokens, getSupply } from './services/TokenService';
+import { allTokens, getMetrics, getSupply } from './services/TokenService';
 
 const app = express();
 app.use(cors());
 app.use((req: express.Request, res: express.Response, next: Function) => {
-  if (!req.url.endsWith('.png')) {
+  if (!req.url.endsWith('.png') && req.url !== '/metrics') {
     console.log('ACCESS LOG', req.url);
   }
   next();
@@ -24,12 +24,7 @@ app.get('/tokens', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/metrics', (req: express.Request, res: express.Response) => {
-  getSupply().then((supply) => {
-    res.send({
-      claimed: 100,
-      available: 6900,
-    });
-  })
+  res.json(getMetrics());
 });
 
 // image for a token

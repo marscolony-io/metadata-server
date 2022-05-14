@@ -34,8 +34,8 @@ const web3 = new Web3(nodeMap[process.env.NETWORK][0]);
 
 const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], CONTRACTS.CLNY);
 const mc = new web3.eth.Contract(MC.abi as AbiItem[], CONTRACTS.MC);
-const gm = new web3.eth.Contract(GM.abi as AbiItem[], CONTRACTS.GM);
-const gms = nodes.map((node) => new new Web3(node).eth.Contract(GM.abi as AbiItem[], CONTRACTS.GM));
+const gm = new web3.eth.Contract(GM as AbiItem[], CONTRACTS.GM);
+const gms = nodes.map((node) => new new Web3(node).eth.Contract(GM as AbiItem[], CONTRACTS.GM));
 const anyGm = () => gms[Math.floor(Math.random() * gms.length)];
 
 type TokenData = {
@@ -184,4 +184,30 @@ export const getSupply = async (): Promise<string> => {
     
   }
   return cachedSupply;
+};
+
+type Metrics = {
+  available: number;
+  claimed: number;
+};
+(async () => {
+  while (true) {
+    try {
+      const metrics = await gm.methods.saleData().call();
+      
+      cachedMetrics = {
+        available: metrics.limit - metrics.minted,
+        claimed: parseInt(metrics.minted),
+      };
+    } catch {}
+    
+    await new Promise(rs => setTimeout(rs, 10_000));
+  }
+})();
+let cachedMetrics: Metrics | null = null;
+export const getMetrics = (): Metrics => {
+  return cachedMetrics ?? {
+    available: 0,
+    claimed: 0,
+  };
 };
