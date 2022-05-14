@@ -9,8 +9,8 @@ const cache: string[] = new Array(21000);
 const CHAIN_DATA = {
   hartest: ['#dddd44', '#774455', '#dd2233', '', 10],
   harmain: ['#dddd44', '#774455', '#dd2233', '', 10],
-  mumbai:  ['#45017a', '#8347e5', '#f6f3a7', 'fdfd', 8],
-  polygon: ['#8347e5', '#f6f3a7', '#45017a', '^&', 21],
+  mumbai:  ['#803bd4', '#b176ea', '#413f67', 'fdfd', 10],
+  polygon: ['#803bd4', '#b176ea', '#413f67', '^&', 10],
 };
 
 export const generateImage = (token: number): string => {
