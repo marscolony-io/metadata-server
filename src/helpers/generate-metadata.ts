@@ -79,7 +79,7 @@ export const generateMetadata = async (token: number): Promise<Record<string, st
   return {
     name: `Land Plot #${token}`,
     description: generateDescription(token),
-    image: `${IMG_URL[process.env.NETWORK]}/${token}.png`,
+    image: `${IMG_URL[process.env.NETWORK]}${token}.png`,
     attributes,
   };
 };
