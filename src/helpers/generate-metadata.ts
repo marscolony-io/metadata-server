@@ -64,6 +64,13 @@ const generateAttributes = async (token: number): Promise<Attribute[] | null> =>
   ];
 };
 
+const IMG_URL = {
+  hartest: 'https://meta.marscolony.io/',
+  harmain: 'https://meta.marscolony.io/',
+  mumbai:  'https://meta-mumbai.marscolony.io/',
+  polygon: 'https://meta-polygon.marscolony.io/',
+};
+
 export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>> | null> => {
   const attributes = await generateAttributes(token);
   if (attributes === null) {
@@ -72,7 +79,7 @@ export const generateMetadata = async (token: number): Promise<Record<string, st
   return {
     name: `Land Plot #${token}`,
     description: generateDescription(token),
-    image: `https://meta.marscolony.io/${token}.png`,
+    image: `${IMG_URL[process.env.NETWORK]}/${token}.png`,
     attributes,
   };
 };
