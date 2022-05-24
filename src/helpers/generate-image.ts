@@ -9,7 +9,7 @@ const cache: string[] = new Array(21000);
 const CHAIN_DATA = {
   hartest: ['#dddd44', '#774455', '#dd2233', '', 10],
   harmain: ['#dddd44', '#774455', '#dd2233', '', 10],
-  mumbai:  ['#803bd4', '#b176ea', '#413f67', 'fdfd', 10],
+  mumbai:  ['#803bd4', '#b176ea', '#413f67', '^&', 10],
   polygon: ['#803bd4', '#b176ea', '#413f67', '^&', 10],
 };
 

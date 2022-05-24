@@ -152,8 +152,8 @@ export const getData = async (token: number): Promise<Attribute[] | null> => {
       tokenAttrs.earned.toFixed(3),
     ),
     attribute(
-      'Earning speed, CLNY/day',
-      tokenAttrs.speed.toFixed(1),
+      process.env.SHARES ? 'Shares' : 'Earning speed, CLNY/day',
+      tokenAttrs.speed.toFixed(process.env.SHARES ? 0 : 1),
     ),
     attribute(
       'Base Station',
