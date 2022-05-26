@@ -5,6 +5,7 @@ import MC from '../abi/MC.json';
 import GM from '../abi/GameManager.json';
 import { AbiItem } from 'web3-utils';
 import { Attribute } from '../types';
+import { ALCHEMY_KEY } from '../secrets';
 
 /// TODO move data to redis, escpecially tokens
 
@@ -18,7 +19,7 @@ const nodeMap = {
     'https://api.fuzz.fi',
   ],
   mumbai: [
-    'https://rpc-mumbai.maticvigil.com'
+    'https://polygon-mumbai.g.alchemy.com/v2/' + ALCHEMY_KEY,
   ],
   polygon: [
     'https://polygon-rpc.com',
