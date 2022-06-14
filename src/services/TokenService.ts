@@ -7,8 +7,6 @@ import { AbiItem } from 'web3-utils';
 import { Attribute } from '../types';
 import { ALCHEMY_KEY } from '../secrets';
 
-/// TODO move data to redis, escpecially tokens
-
 const nodeMap = {
   hartest: [
     'https://api.s0.b.hmny.io',
@@ -26,7 +24,10 @@ const nodeMap = {
     'https://rpc-mainnet.matic.network',
     'https://matic-mainnet-archive-rpc.bwarelabs.com',
     'https://rpc.ankr.com/polygon',
-  ]
+  ],
+  fuji: [
+    'https://api.avax-test.network/ext/bc/C/rpc',
+  ],
 }
 
 const nodes = nodeMap[process.env.NETWORK];
