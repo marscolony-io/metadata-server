@@ -19,6 +19,11 @@ const NETWORK_DATA: Record<string, Record<'CLNY' | 'MC' | 'GM', string>> = {
     MC: '0xBF5C3027992690d752be3e764a4B61Fc6910A5c0',
     GM: '0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797',
   },
+  fuji: {
+    CLNY: '0xC6C5b8a181Bbb8AB5cB88dBF424892ee278f6BBc',
+    MC: '0x031D6A8eD3d5ad28b026FF2098Fc2a1d0DB9DcF2',
+    GM: '0x0Dd5dDaC089613F736e89F81E16361b09c7d53C6',
+  },
 };
 
 export const CONTRACTS = NETWORK_DATA[process.env.NETWORK];
