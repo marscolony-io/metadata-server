@@ -1,3 +1,4 @@
+import { CONTRACTS } from "../blockchain/contracts";
 import { attribute, getData } from "../services/TokenService";
 import { Attribute } from '../types';
 
@@ -64,13 +65,6 @@ const generateAttributes = async (token: number): Promise<Attribute[] | null> =>
   ];
 };
 
-const IMG_URL = {
-  hartest: 'https://meta.marscolony.io/',
-  harmain: 'https://meta.marscolony.io/',
-  mumbai:  'https://meta-mumbai.marscolony.io/',
-  polygon: 'https://meta-polygon.marscolony.io/',
-};
-
 export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>> | null> => {
   const attributes = await generateAttributes(token);
   if (attributes === null) {
@@ -79,7 +73,7 @@ export const generateMetadata = async (token: number): Promise<Record<string, st
   return {
     name: `Land Plot #${token}`,
     description: generateDescription(token),
-    image: `${IMG_URL[process.env.NETWORK]}${token}.png`,
+    image: `${CONTRACTS.meta}${token}.png`,
     attributes,
   };
 };
