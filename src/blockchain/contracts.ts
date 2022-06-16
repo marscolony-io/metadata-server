@@ -21,7 +21,7 @@ const NETWORK_DATA: Record<string, {
   },
   polygon: {
     CLNY: '0x73E6432Ec675536BBC6825E16F1D427be44B9639',
-    MC: '0xb5D95034171733F3D636B49e5f4703d7d906b1a4',
+    MC: '0x3B45B2AEc65A4492B7bd3aAd7d9Fa8f82B79D4d0',
     GM: '0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797',
     shares: true,
     meta: 'https://meta-polygon.marscolony.io/',
