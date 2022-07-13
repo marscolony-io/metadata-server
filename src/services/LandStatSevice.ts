@@ -1,5 +1,7 @@
 import { ls } from "../blockchain/contracts";
 
+const TTL = 100000; // expiration of cache in ms
+
 type StatData = {
   burned: number;
   minted: number;
@@ -17,22 +19,36 @@ const getStatFromContract = async (): Promise<StatData | null> => {
       max: data.max,
     };
   } catch (error: any) {
-    console.log(error.message);
+    console.log("getStatFromContract error", error.message);
     return null;
   }
 };
 
 let cachedStatData: StatData | null = null;
 
+const isCacheExpired = (lastUpdateTime: Date): boolean => {
+  const diff = new Date().getTime() - lastUpdateTime.getTime();
+  return diff > TTL;
+};
+
 (async () => {
+  let lastUpdateTime = new Date(0);
   while (true) {
-    try {
-      cachedStatData = await getStatFromContract();
-      // console.log("cachedStatData set", cachedStatData);
-    } catch (error: any) {
-      console.log("getStatFromContract error", error.message);
+    const statData = await getStatFromContract();
+
+    if (!statData && isCacheExpired(lastUpdateTime)) {
+      cachedStatData = {
+        burned: 0,
+        minted: 0,
+        avg: 0,
+        max: 0,
+      };
+    } else {
+      cachedStatData = statData;
+      lastUpdateTime = new Date();
     }
-    await new Promise((rs) => setTimeout(rs, 10000));
+
+    await new Promise((rs) => setTimeout(rs, 10123));
   }
 })();
 
