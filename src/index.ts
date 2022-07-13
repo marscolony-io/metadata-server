@@ -4,6 +4,7 @@ import { generateMetadata } from "./helpers/generate-metadata";
 import cors from "cors";
 import { allTokens, getMetrics, getSupply } from "./services/TokenService";
 import { environment } from "./environment";
+import { getLandStatCachedData } from "./services/LandStatSevice";
 
 const app = express();
 app.use(cors());
@@ -26,6 +27,10 @@ app.get("/tokens", (req: express.Request, res: express.Response) => {
 
 app.get("/metrics", (req: express.Request, res: express.Response) => {
   res.json(getMetrics());
+});
+
+app.get("/clny-stat", (req: express.Request, res: express.Response) => {
+  res.json(getLandStatCachedData());
 });
 
 // image for a token
@@ -66,5 +71,5 @@ app.use((req: express.Request, res: express.Response, next: Function) => {
 });
 
 app.listen(environment.PORT, "127.0.0.1", () => {
-  console.log("server started", process.env.PORT ?? "8000");
+  console.log("server started", environment.PORT);
 });

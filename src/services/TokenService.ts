@@ -1,41 +1,6 @@
-import Web3 from "web3";
-import { CONTRACTS } from "../blockchain/contracts";
-import CLNY from "../abi/CLNY.json";
-import MC from "../abi/MC.json";
-import GM from "../abi/GameManager.json";
-import { AbiItem } from "web3-utils";
+import { anyGm, clny, gm, mc } from "../blockchain/contracts";
+import { CONTRACTS } from "../blockchain/contracts-addresses";
 import { Attribute } from "../types";
-import { ALCHEMY_KEY } from "../secrets";
-import { environment } from "../environment";
-
-const nodeMap = {
-  hartest: ["https://api.s0.b.hmny.io"],
-  harmain: [
-    "https://harmony-0-rpc.gateway.pokt.network",
-    "https://api.harmony.one",
-    "https://api.fuzz.fi",
-  ],
-  mumbai: ["https://polygon-mumbai.g.alchemy.com/v2/" + ALCHEMY_KEY],
-  polygon: [
-    "https://polygon-rpc.com",
-    "https://rpc-mainnet.matic.network",
-    "https://matic-mainnet-archive-rpc.bwarelabs.com",
-    "https://rpc.ankr.com/polygon",
-  ],
-  fuji: ["https://api.avax-test.network/ext/bc/C/rpc"],
-};
-
-const nodes = nodeMap[environment.NETWORK];
-
-const web3 = new Web3(nodeMap[environment.NETWORK][0]);
-
-const clny = new web3.eth.Contract(CLNY.abi as AbiItem[], CONTRACTS.CLNY);
-const mc = new web3.eth.Contract(MC.abi as AbiItem[], CONTRACTS.MC);
-const gm = new web3.eth.Contract(GM as AbiItem[], CONTRACTS.GM);
-const gms = nodes.map(
-  (node) => new new Web3(node).eth.Contract(GM as AbiItem[], CONTRACTS.GM)
-);
-const anyGm = () => gms[Math.floor(Math.random() * gms.length)];
 
 type TokenData = {
   earned: number;
@@ -58,12 +23,12 @@ export const allTokens: Array<number> = [];
       const data = await mc.methods
         .allTokensPaginate(start, start + 999)
         .call();
-      allTokens.push(...data.map((id) => parseInt(id)));
+      allTokens.push(...data.map((id: string) => parseInt(id)));
       start += data.length;
       if (start >= 21000) {
         break;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("paginate", error.message);
     }
     await new Promise((rs) => setTimeout(rs, 1000));
@@ -105,7 +70,7 @@ const tokenData: Map<number, TokenData> = new Map();
         }
         console.log("ok", i);
         i = i + BUNCH_SIZE;
-      } catch (error) {
+      } catch (error: any) {
         console.log("data", error.message);
       }
     }
@@ -134,7 +99,7 @@ export const getData = async (token: number): Promise<Attribute[] | null> => {
         powerProduction: parseInt(item.powerProduction),
         lastUpdated: new Date(),
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
       return null;
     }

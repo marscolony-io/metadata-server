@@ -1,9 +1,9 @@
-import { CONTRACTS } from "../blockchain/contracts";
+import { CONTRACTS } from "../blockchain/contracts-addresses";
 import { attribute, getData } from "../services/TokenService";
-import { Attribute } from '../types';
+import { Attribute } from "../types";
 
-const toRad = (phi: number): number => phi * Math.PI / 180;
-const toDeg = (phi: number): number => phi / Math.PI * 180;
+const toRad = (phi: number): number => (phi * Math.PI) / 180;
+const toDeg = (phi: number): number => (phi / Math.PI) * 180;
 
 const cos = (value: number): number => Math.cos(toRad(value));
 const acos = (value: number): number => toDeg(Math.acos(value));
@@ -16,14 +16,14 @@ const toLatPart = (val: number): number => {
   return Math.floor(val / 150);
 };
 
-const parseTokenNumber = (tokenNumber: number): { x: number, y: number } => {
+const parseTokenNumber = (tokenNumber: number): { x: number; y: number } => {
   const y = toLatPart(tokenNumber - 1);
   const x = toLongPart(tokenNumber - 1);
   return { x, y };
 };
 
 const toLong = (val: number): number => {
-  return (val - 150 / 2) / 150 * 360;
+  return ((val - 150 / 2) / 150) * 360;
 };
 
 const toLat = (val: number): number => {
@@ -31,13 +31,13 @@ const toLat = (val: number): number => {
     return 0;
   }
   if (val < 70) {
-    return 90 - acos(cos(90) + (70 - val) * (cos(10) - cos(90)) / 70); // > 0
+    return 90 - acos(cos(90) + ((70 - val) * (cos(10) - cos(90))) / 70); // > 0
   }
   if (val > 70) {
     return -toLat(140 - val); // < 0
   }
   return 0; // for ts
-}
+};
 
 const generateDescription = (token: number): string => {
   const { x, y } = parseTokenNumber(token);
@@ -48,7 +48,9 @@ const generateDescription = (token: number): string => {
   return `Land plot #${token}`;
 };
 
-const generateAttributes = async (token: number): Promise<Attribute[] | null> => {
+const generateAttributes = async (
+  token: number
+): Promise<Attribute[] | null> => {
   const { x, y } = parseTokenNumber(token);
   const latitudes: [number, number] = [toLat(y), toLat(y + 1)];
   const longitudes: [number, number] = [toLong(x), toLong(x + 1)];
@@ -59,13 +61,21 @@ const generateAttributes = async (token: number): Promise<Attribute[] | null> =>
     return null;
   }
   return [
-    attribute('Longitudes', `${longitudes[0].toFixed(8)} - ${longitudes[1].toFixed(8)}`),
-    attribute('Latitudes', `${latitudes[0].toFixed(8)} - ${latitudes[1].toFixed(8)}`),
+    attribute(
+      "Longitudes",
+      `${longitudes[0].toFixed(8)} - ${longitudes[1].toFixed(8)}`
+    ),
+    attribute(
+      "Latitudes",
+      `${latitudes[0].toFixed(8)} - ${latitudes[1].toFixed(8)}`
+    ),
     ...data,
   ];
 };
 
-export const generateMetadata = async (token: number): Promise<Record<string, string | Record<string, any>> | null> => {
+export const generateMetadata = async (
+  token: number
+): Promise<Record<string, string | Record<string, any>> | null> => {
   const attributes = await generateAttributes(token);
   if (attributes === null) {
     return null;

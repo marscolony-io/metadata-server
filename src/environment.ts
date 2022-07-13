@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { cleanEnv, str, num, bool, url } from "envalid";
+import { cleanEnv, str, num } from "envalid";
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -11,6 +11,6 @@ export type Environment = {
 };
 
 export const environment = cleanEnv(process.env, {
-  NETWORK: str({ desc: "Name ot the network, e.g. hartest" }),
+  NETWORK: str({ choices: ["hartest", "mumbai", "polygon", "fuji"] }),
   PORT: num({ default: 8000 }),
 });
