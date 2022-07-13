@@ -28,7 +28,7 @@ let cachedStatData: StatData | null = null;
   while (true) {
     try {
       cachedStatData = await getStatFromContract();
-      console.log("cachedStatData set", cachedStatData);
+      // console.log("cachedStatData set", cachedStatData);
     } catch (error: any) {
       console.log("getStatFromContract error", error.message);
     }
