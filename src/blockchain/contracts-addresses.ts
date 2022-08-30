@@ -10,14 +10,6 @@ const NETWORK_DATA: Record<
     meta: string;
   }
 > = {
-  hartest: {
-    CLNY: "0x6b1a8FED67401fE9Ed5B4736Bc94D6Fb9F42CC46",
-    MC: "0xc268D8b64ce7DB6Eb8C29562Ae538005Fded299A",
-    GM: "0xc65F8BA708814653EDdCe0e9f75827fe309E29aD",
-    LANDSTATS: "",
-    shares: false,
-    meta: "https://meta.marscolony.io/",
-  },
   harmain: {
     CLNY: "0x0D625029E21540aBdfAFa3BFC6FD44fB4e0A66d0",
     MC: "0x0bC0cdFDd36fc411C83221A348230Da5D3DfA89e",
@@ -27,7 +19,7 @@ const NETWORK_DATA: Record<
     meta: "https://meta.marscolony.io/",
   },
   polygon: {
-    CLNY: "0x73E6432Ec675536BBC6825E16F1D427be44B9639",
+    CLNY: "0xCEBaF32BBF205aDB2BcC5d2a5A5DAd91b83Ba424",
     MC: "0x3B45B2AEc65A4492B7bd3aAd7d9Fa8f82B79D4d0",
     GM: "0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797",
     LANDSTATS: "0xfa97104d909b7c625f3e97e1740f8e3f77e8cf1f",
