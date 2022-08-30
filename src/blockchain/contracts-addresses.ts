@@ -8,6 +8,7 @@ const NETWORK_DATA: Record<
     LANDSTATS: string;
     shares: boolean;
     meta: string;
+    excludeFromSupply: string[]; // addresses for excluding to make circulating supply
   }
 > = {
   harmain: {
@@ -17,6 +18,7 @@ const NETWORK_DATA: Record<
     LANDSTATS: "",
     shares: false,
     meta: "https://meta.marscolony.io/",
+    excludeFromSupply: [],
   },
   polygon: {
     CLNY: "0xCEBaF32BBF205aDB2BcC5d2a5A5DAd91b83Ba424",
@@ -25,6 +27,12 @@ const NETWORK_DATA: Record<
     LANDSTATS: "0xfa97104d909b7c625f3e97e1740f8e3f77e8cf1f",
     shares: true,
     meta: "https://meta-polygon.marscolony.io/",
+    excludeFromSupply: [
+      '0x42f9f020afe1b2a9554ad6c0749447519692f630', // treasury
+      '0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797', // gamemanager - buffer for claiming
+      '0x97F8027E5BbcE64200B65c5cF675fCED587eF0e8', // liquidity for mining
+      '0x0319000133d3ada02600f0875d2cf03d442c3367', // liquidity in sushiswap
+    ],
   },
   mumbai: {
     CLNY: "0x73E6432Ec675536BBC6825E16F1D427be44B9639",
@@ -33,6 +41,7 @@ const NETWORK_DATA: Record<
     LANDSTATS: "0x3bB9c59f48F40C9bC37Ec11bE1ad138c8d1C3ECb",
     shares: true,
     meta: "https://meta-mumbai.marscolony.io/",
+    excludeFromSupply: [],
   },
   fuji: {
     CLNY: "0xC6C5b8a181Bbb8AB5cB88dBF424892ee278f6BBc",
@@ -41,6 +50,7 @@ const NETWORK_DATA: Record<
     LANDSTATS: "",
     shares: false,
     meta: "https://meta-fuji.marscolony.io/",
+    excludeFromSupply: [],
   },
 };
 

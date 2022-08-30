@@ -123,6 +123,7 @@ export const getData = async (token: number): Promise<Attribute[] | null> => {
 };
 
 let cachedSupply = "Error";
+let cachedCirculatingSupply = "Error";
 export const getSupply = async (): Promise<string> => {
   try {
     const supply = await clny.methods.totalSupply().call();
@@ -131,10 +132,26 @@ export const getSupply = async (): Promise<string> => {
   return cachedSupply;
 };
 
+export const getCirculatingSupply = async (): Promise<string> => {
+  try {
+    const totalSupply = await clny.methods.totalSupply().call();
+    
+    let lockedSupply = 0;
+    for (const address of CONTRACTS.excludeFromSupply) {
+      const balance = await clny.methods.balanceOf(address).call();
+      lockedSupply = lockedSupply + balance * 1e-18;
+    }
+
+    cachedCirculatingSupply = (totalSupply * 1e-18 - lockedSupply).toFixed(3);
+  } catch {}
+  return cachedCirculatingSupply;
+};
+
 type Metrics = {
   available: number;
   claimed: number;
 };
+
 (async () => {
   while (true) {
     try {

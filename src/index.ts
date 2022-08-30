@@ -2,7 +2,7 @@ import express from "express";
 import { generateImage } from "./helpers/generate-image";
 import { generateMetadata } from "./helpers/generate-metadata";
 import cors from "cors";
-import { allTokens, getMetrics, getSupply } from "./services/TokenService";
+import { allTokens, getCirculatingSupply, getMetrics, getSupply } from "./services/TokenService";
 import { environment } from "./environment";
 import { getLandStatCachedData } from "./services/LandStatSevice";
 
@@ -17,6 +17,12 @@ app.use((req: express.Request, res: express.Response, next: Function) => {
 
 app.get("/clny-supply", (req: express.Request, res: express.Response) => {
   getSupply().then((supply) => {
+    res.send(supply);
+  });
+});
+
+app.get("/clny-circulating-supply", (req: express.Request, res: express.Response) => {
+  getCirculatingSupply().then((supply) => {
     res.send(supply);
   });
 });
