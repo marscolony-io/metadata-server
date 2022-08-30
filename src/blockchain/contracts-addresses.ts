@@ -31,7 +31,7 @@ const NETWORK_DATA: Record<
       '0x42f9f020afe1b2a9554ad6c0749447519692f630', // treasury
       '0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797', // gamemanager - buffer for claiming
       '0x97F8027E5BbcE64200B65c5cF675fCED587eF0e8', // liquidity for mining
-      '0x0319000133d3ada02600f0875d2cf03d442c3367', // liquidity in sushiswap
+      // '0x0319000133d3ada02600f0875d2cf03d442c3367', // liquidity in sushiswap
     ],
   },
   mumbai: {
