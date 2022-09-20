@@ -47,7 +47,7 @@ const NETWORK_DATA: Record<
     CLNY: "0xC6C5b8a181Bbb8AB5cB88dBF424892ee278f6BBc",
     MC: "0x031D6A8eD3d5ad28b026FF2098Fc2a1d0DB9DcF2",
     GM: "0x0Dd5dDaC089613F736e89F81E16361b09c7d53C6",
-    LANDSTATS: "",
+    LANDSTATS: "0xE5F9559FCC5403dda8695dDc7C5E3255C2e25d68",
     shares: false,
     meta: "https://meta-fuji.marscolony.io/",
     excludeFromSupply: [],
