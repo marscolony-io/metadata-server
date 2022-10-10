@@ -19,7 +19,7 @@ const getStatFromContract = async (): Promise<StatData | null> => {
       max: data.max,
     };
   } catch (error: any) {
-    console.log("getStatFromContract error", error.message);
+    console.log("getStatFromContract error", error);
     return null;
   }
 };
