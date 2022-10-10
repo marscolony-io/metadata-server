@@ -24,7 +24,7 @@ const NETWORK_DATA: Record<
     CLNY: "0xCEBaF32BBF205aDB2BcC5d2a5A5DAd91b83Ba424",
     MC: "0x3B45B2AEc65A4492B7bd3aAd7d9Fa8f82B79D4d0",
     GM: "0xCAFAeD55fEfEd74Ca866fE72D65CfF073eb42797",
-    LANDSTATS: "0xfa97104d909b7c625f3e97e1740f8e3f77e8cf1f",
+    LANDSTATS: "0xf8C9a745188FC9E7aE05E69Dc5C672647d43d073",
     shares: true,
     meta: "https://meta-polygon.marscolony.io/",
     excludeFromSupply: [
