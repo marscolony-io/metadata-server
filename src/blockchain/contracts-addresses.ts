@@ -15,7 +15,7 @@ const NETWORK_DATA: Record<
     CLNY: "0x0D625029E21540aBdfAFa3BFC6FD44fB4e0A66d0",
     MC: "0x0bC0cdFDd36fc411C83221A348230Da5D3DfA89e",
     GM: "0x0D112a449D23961d03E906572D8ce861C441D6c3",
-    LANDSTATS: "",
+    LANDSTATS: "0xdbED3CB4390C436F9a113859227207834DC171e1",
     shares: false,
     meta: "https://meta.marscolony.io/",
     excludeFromSupply: [],
