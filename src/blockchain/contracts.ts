@@ -11,9 +11,9 @@ import { environment } from "../environment";
 const nodeMap = {
   hartest: ["https://api.s0.b.hmny.io"],
   harmain: [
-    "https://harmony-0-rpc.gateway.pokt.network",
+    "https://a.api.s0.t.hmny.io",
     "https://api.harmony.one",
-    "https://api.fuzz.fi",
+    "https://api.s0.t.hmny.io",
   ],
   mumbai: ["https://polygon-mumbai.g.alchemy.com/v2/" + ALCHEMY_KEY],
   polygon: [
